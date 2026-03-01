@@ -1,12 +1,12 @@
 # ==============================================================
-# main.py — MOCK VERSION (No OpenAI Required)
+# main.py — MOCK VERSION (No OpenAI Required, No Pandas)
 # HOW TO RUN: uvicorn main:app --reload
 # ==============================================================
 
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
-import pandas as pd
+import csv
 import io
 import asyncio
 from pydantic import BaseModel
@@ -32,34 +32,32 @@ def health_check():
 
 
 # ==============================================================
-# ROUTE 2: GET COLUMNS
+# ROUTE 2: GET COLUMNS (CSV ONLY)
 # ==============================================================
 @app.post("/get-columns")
 async def get_columns(file: UploadFile = File(...)):
     try:
-        file_bytes = await file.read()
+        if not file.filename.endswith(".csv"):
+            raise HTTPException(status_code=400, detail="Please upload CSV file")
 
-        if file.filename.endswith(".csv"):
-            df = pd.read_csv(io.StringIO(file_bytes.decode("utf-8")))
-        elif file.filename.endswith((".xlsx", ".xls")):
-            df = pd.read_excel(io.BytesIO(file_bytes))
-        else:
-            raise HTTPException(status_code=400, detail="Please upload CSV or Excel file")
+        content = await file.read()
+        decoded = content.decode("utf-8")
+
+        reader = csv.DictReader(io.StringIO(decoded))
+        rows = list(reader)
 
         return {
-            "columns": df.columns.tolist(),
-            "row_count": len(df),
-            "preview": df.head(3).to_dict(orient="records")
+            "columns": reader.fieldnames,
+            "row_count": len(rows),
+            "preview": rows[:3]
         }
 
-    except HTTPException:
-        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
 # ==============================================================
-# ROUTE 3: REWRITE (MAIN LOGIC)
+# ROUTE 3: REWRITE (CSV ONLY)
 # ==============================================================
 @app.post("/rewrite")
 async def rewrite_descriptions(
@@ -70,39 +68,38 @@ async def rewrite_descriptions(
     max_length: int = Form(200)
 ):
     try:
-        file_bytes = await file.read()
+        if not file.filename.endswith(".csv"):
+            raise HTTPException(status_code=400, detail="Only CSV supported")
 
-        if file.filename.endswith(".csv"):
-            df = pd.read_csv(io.StringIO(file_bytes.decode("utf-8")))
-        elif file.filename.endswith((".xlsx", ".xls")):
-            df = pd.read_excel(io.BytesIO(file_bytes))
-        else:
-            raise HTTPException(status_code=400, detail="Only CSV and Excel supported")
+        content = await file.read()
+        decoded = content.decode("utf-8")
 
-        if column not in df.columns:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Column '{column}' not found"
-            )
+        reader = csv.DictReader(io.StringIO(decoded))
+        rows = list(reader)
+        columns = reader.fieldnames
 
-        rewritten_list = []
-
-        for index, row in df.iterrows():
-            original = str(row[column])
-
-            if not original.strip() or original.lower() == "nan":
-                rewritten_list.append("")
-                continue
-
-            rewritten = mock_rewrite(original, tone, keywords, max_length)
-            rewritten_list.append(rewritten)
-
-            await asyncio.sleep(0.1)  # small delay for realism
-
-        df[f"{column}_rewritten"] = rewritten_list
+        if column not in columns:
+            raise HTTPException(status_code=400, detail=f"Column '{column}' not found")
 
         output = io.StringIO()
-        df.to_csv(output, index=False)
+        new_columns = columns + [f"{column}_rewritten"]
+        writer = csv.DictWriter(output, fieldnames=new_columns)
+        writer.writeheader()
+
+        for row in rows:
+            original = row.get(column, "")
+
+            if not original.strip():
+                row[f"{column}_rewritten"] = ""
+            else:
+                row[f"{column}_rewritten"] = mock_rewrite(
+                    original, tone, keywords, max_length
+                )
+
+            writer.writerow(row)
+
+            await asyncio.sleep(0.05)  # small delay for realism
+
         output.seek(0)
 
         return StreamingResponse(
@@ -111,8 +108,6 @@ async def rewrite_descriptions(
             headers={"Content-Disposition": f"attachment; filename=rewritten_{file.filename}"}
         )
 
-    except HTTPException:
-        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
