@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReWrite.AI — Setup Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#08080f; --card:#0f0f18; --card2:#141420; --border:#1a1a2a; --border2:#22223a;
+  --green:#00e5a0; --green-dim:rgba(0,229,160,0.1); --green-glow:rgba(0,229,160,0.2);
+  --text:#ededf5; --muted:#55556a; --muted2:#8888a8;
+  --red:#ff5c5c; --yellow:#ffb347; --blue:#4da6ff; --purple:#b48eff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.7;font-size:15px}
+a{color:var(--green);text-decoration:none}
+a:hover{text-decoration:underline}
+code{font-family:'JetBrains Mono',monospace;background:var(--card2);border:1px solid var(--border2);padding:2px 6px;border-radius:5px;font-size:.82em;color:var(--green)}
+strong{color:var(--text)}
+
+/* COVER */
+.cover{background:linear-gradient(160deg,#0a0a14 0%,#0d0d1c 100%);border-bottom:1px solid var(--border);padding:60px 24px;text-align:center}
+.cover h1{font-size:2.8rem;font-weight:700;letter-spacing:-.04em;margin-bottom:8px}
+.cover h1 em{font-style:normal;color:var(--green)}
+.cover-sub{color:var(--muted2);font-size:1rem;margin-bottom:24px}
+.cover-pills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.pill{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:100px;border:1px solid var(--border2);color:var(--muted2);letter-spacing:.04em}
+.pill-g{border-color:rgba(0,229,160,.3);color:var(--green);background:var(--green-dim)}
+.pill-r{border-color:rgba(255,92,92,.3);color:var(--red);background:rgba(255,92,92,.08)}
+
+/* CONTAINER */
+.wrap{max-width:860px;margin:0 auto;padding:0 24px 80px}
+
+/* ALERT */
+.alert{display:flex;gap:14px;padding:18px 20px;border-radius:12px;margin:28px 0;font-size:.88rem;line-height:1.6}
+.alert-icon{font-size:1.5rem;flex-shrink:0}
+.alert-red{background:rgba(255,92,92,.07);border:1px solid rgba(255,92,92,.3)}
+.alert-red strong{color:var(--red)}
+.alert-yellow{background:rgba(255,179,71,.07);border:1px solid rgba(255,179,71,.3)}
+.alert-yellow strong{color:var(--yellow)}
+.alert-blue{background:rgba(77,166,255,.07);border:1px solid rgba(77,166,255,.3)}
+.alert-blue strong{color:var(--blue)}
+.alert-green{background:var(--green-dim);border:1px solid rgba(0,229,160,.3)}
+.alert-green strong{color:var(--green)}
+
+/* SECTION HEADING */
+.sec{display:flex;align-items:center;gap:14px;margin:52px 0 24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.sec-num{width:42px;height:42px;background:var(--green);color:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;flex-shrink:0}
+.sec-title{font-size:1.35rem;font-weight:700;letter-spacing:-.03em}
+.sec-sub{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted2);margin-top:3px}
+
+/* STEP CARD */
+.step{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:12px}
+.step-hd{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.step-n{width:30px;height:30px;background:var(--card2);border:2px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:600;flex-shrink:0;color:var(--muted2);margin-top:2px}
+.step-n.on{border-color:var(--green);color:var(--green);background:var(--green-dim)}
+.step-title{font-size:1rem;font-weight:700;margin-bottom:3px}
+.step-sub{font-size:.82rem;color:var(--muted2)}
+
+/* CODE BLOCK */
+.cb{background:#06060d;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:12px 0}
+.cb-head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--card2);border-bottom:1px solid var(--border)}
+.cb-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--muted2);letter-spacing:.07em;text-transform:uppercase}
+.cb-body{padding:16px;font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.9;white-space:pre-wrap;word-break:break-all}
+.c{color:#3a3a55} /* comment */
+.g{color:var(--green)} /* command / value */
+.p{color:var(--purple)} /* path */
+.y{color:var(--yellow)} /* keyword */
+.r{color:var(--red)} /* danger */
+
+/* LIST */
+.list{list-style:none;display:flex;flex-direction:column;gap:10px;margin:10px 0}
+.list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--muted2);line-height:1.5}
+.bullet{width:20px;height:20px;border:1.5px solid var(--border2);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.65rem;margin-top:2px;color:var(--muted)}
+
+/* FOLDER TREE */
+.tree{background:#06060d;border:1px solid var(--border);border-radius:10px;padding:18px 20px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:2;margin:14px 0}
+.t-dir{color:var(--blue);font-weight:600}
+.t-imp{color:var(--green);font-weight:600}
+.t-file{color:var(--muted2)}
+.t-note{color:var(--muted);font-size:.7rem}
+
+/* TWO COL */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+@media(max-width:600px){.two{grid-template-columns:1fr}.cover h1{font-size:1.9rem}}
+
+/* DIAGRAM */
+.diag{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin:14px 0;text-align:center}
+.diag-row{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.box{padding:10px 16px;border-radius:9px;font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:600;line-height:1.4}
+.box-g{background:var(--green-dim);border:1px solid rgba(0,229,160,.3);color:var(--green)}
+.box-b{background:rgba(77,166,255,.1);border:1px solid rgba(77,166,255,.3);color:var(--blue)}
+.box-p{background:rgba(180,142,255,.1);border:1px solid rgba(180,142,255,.3);color:var(--purple)}
+.box-y{background:rgba(255,179,71,.1);border:1px solid rgba(255,179,71,.3);color:var(--yellow)}
+.arr{color:var(--muted);font-size:1.2rem}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:.82rem;margin:14px 0}
+.tbl th{text-align:left;padding:9px 14px;background:var(--card2);color:var(--muted2);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--border)}
+.tbl td{padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.04);font-family:'JetBrains Mono',monospace;font-size:.75rem;vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+
+p{margin-bottom:10px;color:var(--muted2);font-size:.9rem}
+p strong{color:var(--text)}
+h3{font-size:.95rem;font-weight:700;margin-bottom:6px}
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <h1>ReWrite<em>.AI</em> Setup Guide</h1>
+  <p class="cover-sub">Zero to running on your PC — every single step, no commands skipped</p>
+  <div class="cover-pills">
+    <span class="pill pill-g">React + FastAPI + OpenAI</span>
+    <span class="pill pill-r">⚠ Delete your exposed API key first</span>
+    <span class="pill">Complete Beginner Friendly</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- URGENT -->
+<div class="alert alert-red">
+  <div class="alert-icon">🚨</div>
+  <div>
+    <strong>DO THIS RIGHT NOW — Your API Key Is Exposed!</strong><br>
+    You typed your key <code>sk-uvwx5678...</code> in a chat message. That means it's visible.
+    Go to <strong>platform.openai.com/api-keys</strong> → find that key → click the 🗑 trash icon → delete it.
+    Then create a new one. Takes 2 minutes. If someone finds it they charge money to your account.
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="step" style="margin-top:32px">
+  <h3 style="margin-bottom:12px;font-size:1rem">📋 This guide covers:</h3>
+  <div class="two">
+    <div>
+      <div style="font-size:.84rem;color:var(--muted2);display:flex;flex-direction:column;gap:8px">
+        <span>① Understand the big picture</span>
+        <span>② Understand every file</span>
+        <span>③ Install Python, Node.js, VS Code, Git</span>
+        <span>④ Get your OpenAI API key safely</span>
+        <span>⑤ Run the backend (FastAPI)</span>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:.84rem;color:var(--muted2);display:flex;flex-direction:column;gap:8px">
+        <span>⑥ Run the frontend (React)</span>
+        <span>⑦ Test the full app works</span>
+        <span>⑧ Push to GitHub</span>
+        <span>⑨ Deploy live (GitHub Pages + Render)</span>
+        <span>⑩ Fix common errors</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ========= SECTION 1 ========= -->
+<div class="sec">
+  <div class="sec-num">1</div>
+  <div>
+    <div class="sec-title">Understand the big picture</div>
+    <div class="sec-sub">Before opening VS Code, understand what you're building</div>
+  </div>
+</div>
+
+<p>Your app has <strong>two separate programs</strong> running at the same time, talking to each other. This is called a "full-stack" app — exactly what real companies (Swiggy, Zomato, etc.) build.</p>
+
+<div class="diag">
+  <p style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);margin-bottom:16px;letter-spacing:.08em">DATA FLOW</p>
+  <div class="diag-row">
+    <div class="box box-g">👤 You<br><small>upload CSV</small></div>
+    <div class="arr">→</div>
+    <div class="box box-b">⚛ React<br><small>port 3000</small></div>
+    <div class="arr">→</div>
+    <div class="box box-p">🐍 FastAPI<br><small>port 8000</small></div>
+    <div class="arr">→</div>
+    <div class="box box-y">🤖 OpenAI<br><small>GPT-4o-mini</small></div>
+  </div>
+  <div style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted)">
+    ← Rewritten CSV comes back the same way in reverse
+  </div>
+</div>
+
+<div class="two">
+  <div class="step">
+    <h3>⚛️ Frontend (React) = port 3000</h3>
+    <p style="margin-top:8px">What <strong>you see in the browser</strong>. The upload button, table preview, download button. It has NO direct access to OpenAI — it only talks to FastAPI.</p>
+  </div>
+  <div class="step">
+    <h3>🐍 Backend (FastAPI) = port 8000</h3>
+    <p style="margin-top:8px">The <strong>invisible brain</strong>. Receives files, calls OpenAI, sends results back. Your API key lives here — React never touches it directly.</p>
+  </div>
+</div>
+
+<div class="alert alert-yellow">
+  <div class="alert-icon">💡</div>
+  <div>
+    <strong>Why two programs?</strong> So your secret OpenAI key never goes to the browser (where anyone could steal it). The backend keeps it safe. This is standard architecture — you'll explain it in every interview.
+  </div>
+</div>
+
+
+<!-- ========= SECTION 2 ========= -->
+<div class="sec">
+  <div class="sec-num">2</div>
+  <div>
+    <div class="sec-title">Every file explained</div>
+    <div class="sec-sub">Know what you have before touching anything</div>
+  </div>
+</div>
+
+<div class="tree">
+<span class="t-dir">rewrite-ai/</span>
+│
+├── <span class="t-dir">backend/</span>
+│   ├── <span class="t-imp">main.py</span>              <span class="t-note">⭐ The entire backend — 4 routes + OpenAI call</span>
+│   ├── <span class="t-file">requirements.txt</span>     <span class="t-note">Python packages to install (pip reads this)</span>
+│   └── <span class="t-file">.env.example</span>         <span class="t-note">Template — you copy this and add your real key</span>
+│
+├── <span class="t-dir">frontend/</span>
+│   ├── <span class="t-dir">src/</span>
+│   │   ├── <span class="t-imp">App.jsx</span>          <span class="t-note">⭐ The entire UI — upload → settings → download</span>
+│   │   ├── <span class="t-imp">App.css</span>          <span class="t-note">All the design / styling</span>
+│   │   ├── <span class="t-file">main.jsx</span>         <span class="t-note">Entry point — just starts React (don't touch)</span>
+│   │   └── <span class="t-file">index.css</span>        <span class="t-note">Global CSS variables</span>
+│   ├── <span class="t-file">index.html</span>           <span class="t-note">The single HTML page</span>
+│   ├── <span class="t-file">package.json</span>         <span class="t-note">npm package list</span>
+│   ├── <span class="t-file">vite.config.js</span>       <span class="t-note">Build settings</span>
+│   └── <span class="t-file">.env</span>                 <span class="t-note">Backend URL (already created for you)</span>
+│
+├── <span class="t-dir">.github/workflows/</span>
+│   └── <span class="t-file">deploy.yml</span>           <span class="t-note">Auto-deploys to GitHub Pages on every push</span>
+│
+├── <span class="t-imp">.gitignore</span>               <span class="t-note">⭐ Tells Git "never upload these files" (.env, venv)</span>
+├── <span class="t-file">README.md</span>                <span class="t-note">Project description shown on GitHub</span>
+└── <span class="t-file">sample_products.csv</span>      <span class="t-note">5 test products — use this to try the app</span>
+</div>
+
+<table class="tbl">
+  <thead><tr><th>File</th><th>What it does</th><th>Will you edit it?</th></tr></thead>
+  <tbody>
+    <tr><td>backend/main.py</td><td style="color:var(--muted2)">The backend server. 4 routes: health check, get-columns, rewrite, preview</td><td style="color:var(--green)">Yes (to learn)</td></tr>
+    <tr><td>frontend/src/App.jsx</td><td style="color:var(--muted2)">The entire UI. 3 steps: upload → settings → download</td><td style="color:var(--green)">Yes (to customize)</td></tr>
+    <tr><td>.env (backend)</td><td style="color:var(--muted2)">Your OpenAI API key. NEVER on GitHub.</td><td style="color:var(--yellow)">Yes — add your key</td></tr>
+    <tr><td>.env (frontend)</td><td style="color:var(--muted2)">Backend URL. Already set to localhost:8000</td><td style="color:var(--muted)">Only for deployment</td></tr>
+    <tr><td>.gitignore</td><td style="color:var(--muted2)">Protects .env files from going to GitHub</td><td style="color:var(--muted)">No</td></tr>
+  </tbody>
+</table>
+
+
+<!-- ========= SECTION 3 ========= -->
+<div class="sec">
+  <div class="sec-num">3</div>
+  <div>
+    <div class="sec-title">Install the 4 tools</div>
+    <div class="sec-sub">One-time setup — skip any you already have</div>
+  </div>
+</div>
+
+<!-- PYTHON -->
+<div class="step">
+  <div class="step-hd">
+    <div class="step-n on">A</div>
+    <div>
+      <div class="step-title">Install Python</div>
+      <div class="step-sub">The language the backend is written in</div>
+    </div>
+  </div>
+  <ul class="list">
+    <li><div class="bullet">1</div><div>Go to <strong>python.org/downloads</strong> → click the big yellow Download button</div></li>
+    <li><div class="bullet">!</div><div><strong style="color:var(--red)">Windows critical:</strong> On the installer's first screen, tick the checkbox <strong>"Add Python to PATH"</strong> before clicking Install. Without this Python won't work in Terminal.</div></li>
+    <li><div class="bullet">2</div><div>Click Install Now → finish → close</div></li>
+    <li><div class="bullet">3</div><div>Verify: open Terminal (Windows: press Win+R → type <code>cmd</code> → Enter) → type <code>python --version</code> → should show <code>Python 3.12.x</code></div></li>
+  </ul>
+</div>
+
+<!-- NODE -->
+<div class="step">
+  <div class="step-hd">
+    <div class="step-n on">B</div>
+    <div>
+      <div class="step-title">Install Node.js</div>
+      <div class="step-sub">Needed to run React and install npm packages</div>
+    </div>
+  </div>
+  <ul class="list">
+    <li><div class="bullet">1</div><div>Go to <strong>nodejs.org</strong> → click the <strong>LTS</strong> button (left side — it's the stable version)</div></li>
+    <li><div class="bullet">2</div><div>Run the installer → click Next through everything → Install</div></li>
+    <li><div class="bullet">3</div><div>Verify in Terminal: <code>node --version</code> → shows <code>v20.x.x</code> · Also: <code>npm --version</code> → shows a number</div></li>
+  </ul>
+</div>
+
+<!-- VS CODE -->
+<div class="step">
+  <div class="step-hd">
+    <div class="step-n on">C</div>
+    <div>
+      <div class="step-title">Install VS Code</div>
+      <div class="step-sub">The code editor you'll use</div>
+    </div>
+  </div>
+  <ul class="list">
+    <li><div class="bullet">1</div><div>Go to <strong>code.visualstudio.com</strong> → Download → Install</div></li>
+    <li><div class="bullet">2</div><div>Open VS Code → press <strong>Ctrl+Shift+X</strong> → search and install these 3 extensions: <code>Python</code> (by Microsoft), <code>ES7+ React snippets</code>, <code>Prettier</code></div></li>
+  </ul>
+</div>
+
+<!-- GIT -->
+<div class="step">
+  <div class="step-hd">
+    <div class="step-n on">D</div>
+    <div>
+      <div class="step-title">Install Git</div>
+      <div class="step-sub">For saving code and pushing to GitHub</div>
+    </div>
+  </div>
+  <ul class="list">
+    <li><div class="bullet">1</div><div><strong>Windows:</strong> go to <strong>git-scm.com</strong> → download → install with default settings</div></li>
+    <li><div class="bullet">2</div><div><strong>Mac:</strong> open Terminal → type <code>git --version</code> → if not installed, Mac will offer to install it</div></li>
+    <li><div class="bullet">3</div><div>Set your name & email (shown on GitHub). Open Terminal and run — replace with your actual details:
+      <div class="cb" style="margin-top:8px">
+        <div class="cb-body"><span class="g">git config --global user.name "Your Name"
+git config --global user.email "your@email.com"</span></div>
+      </div>
+    </div></li>
+  </ul>
+</div>
+
+
+<!-- ========= SECTION 4 ========= -->
+<div class="sec">
+  <div class="sec-num">4</div>
+  <div>
+    <div class="sec-title">Get OpenAI API key safely</div>
+    <div class="sec-sub">The right way so it never gets exposed again</div>
+  </div>
+</div>
+
+<div class="alert alert-red">
+  <div class="alert-icon">🔴</div>
+  <div><strong>Golden Rule:</strong> An API key is like a password. It goes ONLY in a <code>.env</code> file. Never in code. Never in chat. Never on GitHub. The <code>.gitignore</code> file already ensures <code>.env</code> is never uploaded.</div>
+</div>
+
+<div class="step">
+  <div class="step-hd"><div class="step-n on">1</div><div><div class="step-title">Create the key on OpenAI's website</div></div></div>
+  <ul class="list">
+    <li><div class="bullet">→</div><div>Go to <strong>platform.openai.com</strong> → sign up/login</div></li>
+    <li><div class="bullet">→</div><div>Click your profile icon (top right) → <strong>API Keys</strong></div></li>
+    <li><div class="bullet">→</div><div>Delete the old exposed key (trash icon beside it)</div></li>
+    <li><div class="bullet">→</div><div>Click <strong>+ Create new secret key</strong> → name it <code>rewrite-ai</code> → Create</div></li>
+    <li><div class="bullet">!</div><div><strong style="color:var(--yellow)">Copy it right now</strong> — you can only see it once. It starts with <code>sk-proj-...</code></div></li>
+    <li><div class="bullet">→</div><div>Click <strong>Billing</strong> in the left sidebar → add $5 credit. This is enough for hundreds of test rewrites.</div></li>
+  </ul>
+</div>
+
+<div class="step">
+  <div class="step-hd"><div class="step-n on">2</div><div><div class="step-title">Save key in the .env file (NOT in the code)</div></div></div>
+  <p>In the <code>backend/</code> folder there's a file called <code>.env.example</code>. You need to create a copy called <code>.env</code> (no ".example"):</p>
+  <div class="cb">
+    <div class="cb-head"><span class="cb-label">Terminal — inside the backend folder</span></div>
+    <div class="cb-body"><span class="c"># Windows:</span>
+<span class="g">copy .env.example .env</span>
+
+<span class="c"># Mac / Linux:</span>
+<span class="g">cp .env.example .env</span></div>
+  </div>
+  <p style="margin-top:10px">Now open <code>backend/.env</code> in VS Code. Replace <code>paste-your-real-key-here</code> with your actual key. Save (Ctrl+S).</p>
+  <div class="cb">
+    <div class="cb-head"><span class="cb-label">backend/.env — what it should look like</span></div>
+    <div class="cb-body"><span class="y">OPENAI_API_KEY</span>=<span class="g">sk-proj-your-actual-key-here</span></div>
+  </div>
+  <div class="alert alert-green" style="margin-top:12px">
+    <div class="alert-icon">✅</div>
+    <div><strong>.gitignore already has <code>.env</code> listed</strong> — so Git will never upload it to GitHub. Your key stays on your computer only.</div>
+  </div>
+</div>
+
+
+<!-- ========= SECTION 5 ========= -->
+<div class="sec">
+  <div class="sec-num">5</div>
+  <div>
+    <div class="sec-title">Run the Backend (FastAPI)</div>
+    <div class="sec-sub">Start the Python server — Terminal window #1</div>
+  </div>
+</div>
+
+<div class="alert alert-blue">
+  <div class="alert-icon">💡</div>
+  <div><strong>What is a "virtual environment" (venv)?</strong> A clean isolated Python sandbox just for this project. Without it, packages from different projects collide. Always use one — it's standard practice and interviewers will ask about it.</div>
+</div>
+
+<div class="step">
+  <div class="step-hd"><div class="step-n on">1</div><div><div class="step-title">Open VS Code in the project folder</div></div></div>
+  <ul class="list">
+    <li><div class="bullet">→</div><div>Open VS Code → File → Open Folder → select the <code>rewrite-ai</code> folder</div></li>
+    <li><div class="bullet">→</div><div>Open VS Code's built-in terminal: press <strong>Ctrl + `</strong> (backtick key — top-left corner, same key as ~). A terminal panel opens at the bottom.</div></li>
+  </ul>
+</div>
+
+<div class="step">
+  <div class="step-hd"><div class="step-n on">2</div><div><div class="step-title">Go to the backend folder</div></div></div>
+  <div class="cb">
+    <div class="cb-head"><span class="cb-label">VS Code Terminal</span></div>
+    <div class="cb-body"><span class="c"># cd = "change directory" — moves you into a folder</span>
+<span class="g">cd backend</span>
+
+<span class="c"># Your prompt should now show something like:</span>
+<span class="c"># C:\Users\You\rewrite-ai\backend>   (Windows)</span>
+<span class="c"># ~/rewrite-ai/backend $             (Mac)</span></div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-hd"><div class="step-n on">3</div><div><div class="step-title">Create and activate the virtual environment</div></div></div>
+  <div class="cb">
+    <div class="cb-head"><span class="cb-label">VS Code Terminal</span></div>
+    <div class="cb-body"><span class="c"># Create the virtual environment (one-time setup)</span>
+<span class="g">python -m venv venv</span>
+
+<span class="c"># ── Activate it ──</span>
+
+<span class="c"># Windows Command Prompt:</span>
+<span class="g">venv\Scripts\activate</span>
+
+<span class="c"># Windows PowerShell (if above fails):</span>
+<span class="g">venv\Scripts\Activate.ps1</span>
+
+<span class="c"># Mac / Linux:</span>
+<span class="g">source venv/bin/activate</span>
+
+<span class="c"># ✅ Success: your prompt now shows (venv) at the start</span>
+<span class="c"># Example: (venv) C:\Users\You\rewrite-ai\backend></span></div>
+  </div>
+  <div class="alert alert-yellow" style="margin-top:10px">
+    <div class="alert-icon">⚠️</div>
+    <div>If PowerShell says "running scripts is disabled", run this first: <code>Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser</code> then try again.</div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-hd"><div class="step-n on">4</div><div><div class="step-title">Install Python packages</div></div></div>
+  <div class="cb">
+    <div class="cb-head"><span class="cb-label">Terminal (must show (venv) in prompt)</span></div>
+    <div class="cb-body"><span class="c"># pip reads requirements.txt and installs everything listed</span>
+<span class="c"># This installs: fastapi, uvicorn, openai, pandas, etc.</span>
+<span class="g">pip install -r requirements.txt</span>
+
+<span class="c"># Wait for it to finish. You'll see lots of text.</span>
+<span class="c"># Success looks like: "Successfully installed fastapi-0.111.0 ..."</span></div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-hd"><div class="step-n on">5</div><div><div class="step-title">Create your .env file with the API key</div></div></div>
+  <div class="cb">
+    <div class="cb-head"><span class="cb-label">Terminal</span></div>
+    <div class="cb-body"><span class="c"># Windows:</span>
+<span class="g">copy .env.example .env</span>
+
+<span class="c"># Mac / Linux:</span>
+<span class="g">cp .env.example .env</span>
+
+<span class="c"># Open it in VS Code and add your key:</span>
+<span class="g">code .env</span></div>
+  </div>
+  <p style="margin-top:8px">The file opens. Change <code>paste-your-real-key-here</code> to your actual OpenAI key. Save with Ctrl+S.</p>
+</div>
+
+<div class="step">
+  <div class="step-hd"><div class="step-n on">6</div><div><div class="step-title">Start the FastAPI server</div></div></div>
+  <div class="cb">
+    <div class="cb-head"><span class="cb-label">Terminal</span></div>
+    <div class="cb-body"><span class="g">uvicorn main:app --reload</span>
+
+<span class="c"># --reload = auto-restarts when you save code changes</span>
+<span class="c">#</span>
+<span class="c"># ✅ You should see:</span>
+<span class="c"># INFO:     Uvicorn running on http://127.0.0.1:8000</span>
+<span class="c"># INFO:     Application startup complete.</span></div>
+  </div>
+  <div class="alert alert-green" style="margin-top:10px">
+    <div class="alert-icon">✅</div>
+    <div>Open your browser and go to <strong>http://localhost:8000</strong> — you should see <code>{"status":"running"}</code>. Also try <strong>http://localhost:8000/docs</strong> — this is the auto-generated API documentation.</div>
+  </div>
+  <p style="margin-top:10px"><strong>Leave this terminal window open.</strong> The server must keep running while you use the app.</p>
+</div>
+
+
+<!-- ========= SECTION 6 ========= -->
+<div class="sec">
+  <div class="sec-num">6</div>
+  <div>
+    <div class="sec-title">Run the Frontend (React)</div>
+    <div class="sec-sub">Open a NEW terminal window — Terminal window #2</div>
+  </div>
+</div>
+
+<div class="alert alert-yellow">
+  <div class="alert-icon">⚠️</div>
+  <div><strong>Important:</strong> Open a <em>new</em> terminal window or tab. Don't stop the backend server from Section 5. Both need to run at the same time.</div>
+</div>
+
+<div class="step">
+  <div class="step-hd"><div class="step-n on">1</div><div><div class="step-title">Open a new terminal and go to the frontend folder</div></div></div>
+  <div class="cb">
+    <div class="cb-head"><span class="cb-label">NEW Terminal window (not the backend one)</span></div>
+    <div class="cb-body"><span class="c"># If you're in rewrite-ai/ folder:</span>
+<span class="g">cd frontend</span>
+
+<span class="c"># If you're starting fresh from anywhere, navigate first:</span>
+<span class="c"># cd C:\Users\You\rewrite-ai\frontend   (Windows)</span>
+<span class="c"># cd ~/rewrite-ai/frontend              (Mac)</span></div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-hd"><div class="step-n on">2</div><div><div class="step-title">Install npm packages</div></div></div>
+  <div class="cb">
+    <div class="cb-head"><span class="cb-label">Terminal (inside frontend folder)</span></div>
+    <div class="cb-body"><span class="c"># npm install reads package.json and downloads all packages</span>
+<span class="c"># This creates a node_modules/ folder (can take 1-2 minutes)</span>
+<span class="g">npm install</span>
+
+<span class="c"># Success: "added 200 packages" or similar</span></div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-hd"><div class="step-n on">3</div><div><div class="step-title">Start React</div></div></div>
+  <div class="cb">
+    <div class="cb-head"><span class="cb-label">Terminal</span></div>
+    <div class="cb-body"><span class="g">npm run dev</span>
+
+<span class="c"># ✅ You should see:</span>
+<span class="c"># VITE v5.x.x  ready in 300ms</span>
+<span class="c"># ➜  Local:   http://localhost:3000/</span></div>
+  </div>
+  <div class="alert alert-green" style="margin-top:10px">
+    <div class="alert-icon">✅</div>
+    <div>Open <strong>http://localhost:3000</strong> in your browser. You should see the ReWrite.AI app! You now have two terminals running: backend on 8000, frontend on 3000.</div>
+  </div>
+</div>
+
+
+<!-- ========= SECTION 7 ========= -->
+<div class="sec">
+  <div class="sec-num">7</div>
+  <div>
+    <div class="sec-title">Test the full app works</div>
+    <div class="sec-sub">Use the included sample file</div>
+  </div>
+</div>
+
+<div class="step">
+  <ul class="list">
+    <li><div class="bullet">1</div><div>Open <strong>http://localhost:3000</strong></div></li>
+    <li><div class="bullet">2</div><div>Click the upload zone or drag <code>sample_products.csv</code> onto it (the file is in your <code>rewrite-ai/</code> folder)</div></li>
+    <li><div class="bullet">3</div><div>You should see "5 rows detected" and a preview table showing the 5 sample products</div></li>
+    <li><div class="bullet">4</div><div>Select <code>description</code> as the column, keep tone as Professional</div></li>
+    <li><div class="bullet">5</div><div>Scroll down → paste any description into the "Test One Description" box → click Test Rewrite. Wait ~3 seconds. You should see a before/after comparison.</div></li>
+    <li><div class="bullet">6</div><div>Click <strong>Rewrite 5 Descriptions</strong>. Wait ~30 seconds. Your browser will download a file called <code>rewritten_sample_products.csv</code>.</div></li>
+    <li><div class="bullet">7</div><div>Open the downloaded CSV. You'll see your original <code>description</code> column AND a new <code>description_rewritten</code> column next to it. 🎉</div></li>
+  </ul>
+</div>
+
+
+<!-- ========= SECTION 8 ========= -->
+<div class="sec">
+  <div class="sec-num">8</div>
+  <div>
+    <div class="sec-title">Push to GitHub</div>
+    <div class="sec-sub">Save your code online and show recruiters</div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-hd"><div class="step-n on">1</div><div><div class="step-title">Create a GitHub repository</div></div></div>
+  <ul class="list">
+    <li><div class="bullet">→</div><div>Go to <strong>github.com</strong> → sign up/login</div></li>
+    <li><div class="bullet">→</div><div>Click the <strong>+</strong> icon (top right) → New repository</div></li>
+    <li><div class="bullet">→</div><div>Name: <code>rewrite-ai</code></div></li>
+    <li><div class="bullet">→</div><div>Description: <code>AI-powered product description rewriter — React + FastAPI + OpenAI</code></div></li>
+    <li><div class="bullet">→</div><div>Set to <strong>Public</strong> (so recruiters can see it)</div></li>
+    <li><div class="bullet">→</div><div>Do <strong>NOT</strong> check "Add README" — you already have one</div></li>
+    <li><div class="bullet">→</div><div>Click <strong>Create repository</strong></div></li>
+  </ul>
+</div>
+
+<div class="step">
+  <div class="step-hd"><div class="step-n on">2</div><div><div class="step-title">Push your code from the terminal</div></div></div>
+  <p>Open a terminal in the <code>rewrite-ai/</code> root folder (not backend, not frontend — the main folder). Run these commands one by one:</p>
+  <div class="cb">
+    <div class="cb-head"><span class="cb-label">Terminal — in the rewrite-ai/ root folder</span></div>
+    <div class="cb-body"><span class="c"># Initialize Git in this folder</span>
+<span class="g">git init</span>
+
+<span class="c"># Stage all files for commit (.gitignore protects .env automatically)</span>
+<span class="g">git add .</span>
+
+<span class="c"># Save a snapshot with a message</span>
+<span class="g">git commit -m "Initial commit — ReWrite.AI"</span>
+
+<span class="c"># Rename branch to "main"</span>
+<span class="g">git branch -M main</span>
+
+<span class="c"># Connect to GitHub (replace YOUR_USERNAME with your GitHub username)</span>
+<span class="g">git remote add origin https://github.com/YOUR_USERNAME/rewrite-ai.git</span>
+
+<span class="c"># Upload your code</span>
+<span class="g">git push -u origin main</span></div>
+  </div>
+  <p style="margin-top:10px">GitHub may ask for your username and password. For password, use a Personal Access Token (GitHub → Settings → Developer Settings → Personal access tokens → Generate new token).</p>
+</div>
+
+<div class="step">
+  <div class="step-hd"><div class="step-n on">3</div><div><div class="step-title">Verify .env was NOT pushed (critical!)</div></div></div>
+  <ul class="list">
+    <li><div class="bullet">→</div><div>Go to <strong>github.com/YOUR_USERNAME/rewrite-ai</strong></div></li>
+    <li><div class="bullet">→</div><div>Click into the <code>backend/</code> folder</div></li>
+    <li><div class="bullet">✅</div><div>You should see <code>.env.example</code> but <strong>NOT</strong> <code>.env</code>. If you see <code>.env</code>, your key is exposed — delete the file from GitHub immediately.</div></li>
+  </ul>
+</div>
+
+
+<!-- ========= SECTION 9 ========= -->
+<div class="sec">
+  <div class="sec-num">9</div>
+  <div>
+    <div class="sec-title">Deploy live</div>
+    <div class="sec-sub">Frontend → GitHub Pages · Backend → Render.com (both free)</div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-hd"><div class="step-n on">A</div><div><div class="step-title">Deploy Backend to Render.com</div><div class="step-sub">Do this FIRST — you need the URL before deploying frontend</div></div></div>
+  <ul class="list">
+    <li><div class="bullet">1</div><div>Go to <strong>render.com</strong> → sign up free (use GitHub login)</div></li>
+    <li><div class="bullet">2</div><div>Click <strong>New +</strong> → <strong>Web Service</strong></div></li>
+    <li><div class="bullet">3</div><div>Click <strong>Connect a repository</strong> → select your <code>rewrite-ai</code> repo</div></li>
+    <li><div class="bullet">4</div><div>Fill in:
+      <div class="cb" style="margin-top:8px">
+        <div class="cb-body"><span class="y">Name:</span>           <span class="g">rewrite-ai-backend</span>
+<span class="y">Root Directory:</span> <span class="g">backend</span>
+<span class="y">Runtime:</span>        <span class="g">Python 3</span>
+<span class="y">Build Command:</span>  <span class="g">pip install -r requirements.txt</span>
+<span class="y">Start Command:</span>  <span class="g">uvicorn main:app --host 0.0.0.0 --port $PORT</span></div>
+      </div>
+    </div></li>
+    <li><div class="bullet">5</div><div>Scroll to <strong>Environment Variables</strong> → click Add → Key: <code>OPENAI_API_KEY</code> → Value: your actual key</div></li>
+    <li><div class="bullet">6</div><div>Click <strong>Create Web Service</strong> → wait ~3 minutes → you'll get a URL like <code>https://rewrite-ai-backend.onrender.com</code></div></li>
+    <li><div class="bullet">7</div><div>Copy that URL — you need it in the next step</div></li>
+  </ul>
+</div>
+
+<div class="step">
+  <div class="step-hd"><div class="step-n on">B</div><div><div class="step-title">Deploy Frontend to GitHub Pages</div></div></div>
+  <ul class="list">
+    <li><div class="bullet">1</div><div>Go to your GitHub repo → click <strong>Settings</strong> tab</div></li>
+    <li><div class="bullet">2</div><div>Left sidebar → <strong>Pages</strong> → Source: select <strong>GitHub Actions</strong></div></li>
+    <li><div class="bullet">3</div><div>Left sidebar → <strong>Secrets and variables</strong> → <strong>Actions</strong> → <strong>New repository secret</strong>:
+      <br>Name: <code>VITE_API_URL</code>
+      <br>Value: <code>https://rewrite-ai-backend.onrender.com</code> (your Render URL)
+    </div></li>
+    <li><div class="bullet">4</div><div>Now trigger a deployment: make any tiny change to a file → commit → push to main. The GitHub Actions workflow will automatically build and deploy.</div></li>
+    <li><div class="bullet">5</div><div>After ~2 minutes, go to repo Settings → Pages → your live URL will be: <code>https://YOUR_USERNAME.github.io/rewrite-ai</code></div></li>
+  </ul>
+</div>
+
+
+<!-- ========= SECTION 10 ========= -->
+<div class="sec">
+  <div class="sec-num">10</div>
+  <div>
+    <div class="sec-title">Common errors and fixes</div>
+    <div class="sec-sub">Things that trip everyone up</div>
+  </div>
+</div>
+
+<table class="tbl">
+  <thead><tr><th>Error You See</th><th>What It Means</th><th>Fix</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><code>'python' not found</code></td>
+      <td style="color:var(--muted2)">Python not installed or not in PATH</td>
+      <td style="color:var(--muted2)">Reinstall Python and tick "Add to PATH" checkbox. Try <code>python3</code> on Mac.</td>
+    </tr>
+    <tr>
+      <td><code>CORS error</code> in browser console</td>
+      <td style="color:var(--muted2)">React can't reach FastAPI</td>
+      <td style="color:var(--muted2)">Make sure backend is running (uvicorn). Check the URL in frontend <code>.env</code> is correct.</td>
+    </tr>
+    <tr>
+      <td><code>401 Unauthorized</code> from OpenAI</td>
+      <td style="color:var(--muted2)">Invalid API key</td>
+      <td style="color:var(--muted2)">Check your <code>backend/.env</code> file. Make sure you saved it. Re-generate key on OpenAI if needed.</td>
+    </tr>
+    <tr>
+      <td><code>(venv)</code> disappears from prompt</td>
+      <td style="color:var(--muted2)">Virtual env deactivated</td>
+      <td style="color:var(--muted2)">Run <code>venv\Scripts\activate</code> again (Windows) or <code>source venv/bin/activate</code> (Mac)</td>
+    </tr>
+    <tr>
+      <td><code>Module not found</code></td>
+      <td style="color:var(--muted2)">Package not installed</td>
+      <td style="color:var(--muted2)">Run <code>pip install -r requirements.txt</code> again with (venv) active</td>
+    </tr>
+    <tr>
+      <td>Frontend shows blank page</td>
+      <td style="color:var(--muted2)">Build or import error</td>
+      <td style="color:var(--muted2)">Press F12 → Console tab → look for red error. Usually a missing <code>npm install</code>.</td>
+    </tr>
+    <tr>
+      <td><code>Port 8000 already in use</code></td>
+      <td style="color:var(--muted2)">Server already running</td>
+      <td style="color:var(--muted2)">Close any old terminal that was running uvicorn, or use <code>uvicorn main:app --reload --port 8001</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert alert-blue" style="margin-top:20px">
+  <div class="alert-icon">💬</div>
+  <div>
+    <strong>Still stuck?</strong> Copy the exact error message and ask Claude:
+    <em>"I'm building a React + FastAPI app. I got this error: [paste error]. What does it mean and how do I fix it?"</em>
+    Be specific — include the full error text, not just "it doesn't work."
+  </div>
+</div>
+
+<div class="step" style="margin-top:32px;text-align:center">
+  <div style="font-size:2rem;margin-bottom:12px">🎉</div>
+  <h3 style="font-size:1.1rem;margin-bottom:8px">You're done!</h3>
+  <p>You now have a full-stack AI SaaS tool running locally and deployed live. This is exactly the kind of project that gets interviews. Put the GitHub link and live demo URL on your resume.</p>
+</div>
+
+</div><!-- end wrap -->
+</body>
+</html>
